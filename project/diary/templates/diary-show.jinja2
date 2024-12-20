@@ -1,0 +1,79 @@
+{% extends "base.jinja2" %}
+
+{% block container %}
+
+<div class="columns">
+  <div class="column is-1">
+  </div>
+  <div class="column is-10">
+    <h1 class="title is-1">{{ page.title }}</h1>
+
+    {% include 'messages.jinja2' %}
+
+    <div class="tabs is-toggle is-fullwidth" id="tabs">
+      <ul>
+        <li class="is-active" data-tab="1">
+          <a>
+            <span class="icon is-small"><i class="fa fa-file"></i></span>
+            <span>Editor</span>
+          </a>
+        </li>
+        <li data-tab="2">
+          <a>
+            <span class="icon is-small"><i class="fa fa-comment"></i></span>
+            <span>Preview</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="tabs-content">
+      <div class="tab-content is-active">
+        <h2 class="title is-2">Editor</h2>
+        <form>
+          <div class="field">
+            <label class="label">Message</label>
+            <div class="control">
+              <textarea class="textarea" placeholder="Textarea"></textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="tab-content">
+        <h2 class="title is-2">Preview</h2>
+        <p>Preview</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="column is-1">
+  </div>
+</div>
+
+<style>
+  .tab-content.is-active {
+      display: block;
+    }
+  .tab-content {
+      display: none;
+  }
+</style>
+
+<script type="text/javascript">
+     $('.tabs').each(function(index) {
+      var $tabParent = $(this);
+      var $tabs = $tabParent.find('li');
+      var $contents = $tabParent.next('.tabs-content').find('.tab-content');
+
+      $tabs.click(function() {
+        var curIndex = $(this).index();
+        console.log(curIndex);
+        // toggle tabs
+        $tabs.removeClass('is-active');
+        $tabs.eq(curIndex).addClass('is-active');
+        // toggle contents
+        $contents.removeClass('is-active');
+        $contents.eq(curIndex).addClass('is-active');
+      });
+    });</script>
+
+{% endblock %}

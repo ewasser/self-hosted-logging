@@ -1,0 +1,95 @@
+{% extends "base.jinja2" %}
+
+{% block container %}
+
+<div class="columns">
+  <div class="column is-1">
+  </div>
+  <div class="column is-10">
+    <h1 class="title">{{ page.title }}</h1>
+    {% include 'messages.jinja2' %}
+    <table class="table is-striped">
+  <thead>
+    <tr>
+      <th><abbr title="ID">#</abbr></th>
+      <th><abbr title="Creation Date">Creation Date</abbr></th>
+      <th><abbr title="Title">Title</abbr></th>
+      <th><abbr title="Channel">Channel</abbr></th>
+      <th><abbr title="payload">Payload</abbr></th>
+      <th><abbr title="status">Status</abbr></th>
+      <th><abbr title="actions">Actions</abbr></th>
+   </tr>
+  </thead>
+  <tfoot>
+    <tr>
+      <th><abbr title="ID">#</abbr></th>
+      <th><abbr title="Creation Date">Creation Date</abbr></th>
+      <th><abbr title="Title">Title</abbr></th>
+      <th><abbr title="Channel">Channel</abbr></th>
+      <th><abbr title="payload">Payload</abbr></th>
+      <th><abbr title="status">Status</abbr></th>
+      <th><abbr title="actions">Actions</abbr></th>
+    </tr>
+  </tfoot>
+  <tbody>
+    {% for row in rows %}
+    <tr>
+      <th>{{ row.id }}</th>
+      <td>{{ row.mtime }}</td>
+      <td>{{ row.title }}</td>
+      <td>{{ row.channel }}</td>
+      <td><pre>{{ row.payload }}</pre></td>
+      <td><span class="icon-text {{ row.status.level }}"><span class="icon"><i class="{{ row.status.icon }}"></i></span><span>{{ row.status.text }}</span></span></td>
+      <td>
+        <a href="{{ url_for('order.view', order_id=row.id) }}">
+          <button class="button is-small is-primary">
+            <span class="icon">
+              <i class="fas fa-eye"></i>
+            </span>
+            <span>View</span>
+          </button>
+        </a>
+        <a href="{{ url_for('order.edit', order_id=row.id) }}">
+          <button class="button is-small is-primary">
+            <span class="icon">
+              <i class="fas fa-edit"></i>
+            </span>
+            <span>Edit</span>
+          </button>
+        </a>
+        <a href="{{ url_for('order.delete', order_id=row.id) }}">
+          <button class="button is-small is-danger">
+            <span class="icon">
+              <i class="fas fa-trash"></i>
+            </span>
+            <span>Delete</span>
+          </button>
+        </a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+  </div>
+  <div class="column is-1">
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  (document.querySelectorAll('.message .delete') || []).forEach(($delete) => {
+    const $notification = $delete.parentNode.parentNode;
+
+    console.log($notification);
+
+    console.log("AAAAA2");
+
+    $delete.addEventListener('click', () => {
+      console.log("AAAAA3");
+      $notification.parentNode.removeChild($notification);
+    });
+  });
+});
+</script>
+
+{% endblock %}

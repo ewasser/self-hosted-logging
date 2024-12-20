@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{ head.title }}</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <link rel="stylesheet" href="{{ url_for('static', filename='bulma/current/bulma.min.css') }}">
+        <script src="{{ url_for('static', filename='fontawesome/current/all.js') }}"></script>
+        <script src="{{ url_for('static', filename='axios/current/axios.min.js') }}"></script>
+        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body>
+      <section class="section">
+        <div class="columns">
+          <div class="column is-12">
+            <nav class="navbar" role="navigation" aria-label="main navigation">
+              <div class="navbar-brand">
+                <a class="navbar-item" href="{{ url_for('root') }}">
+                  <img src="{{ url_for('static', filename='logo.png') }}" width="112" height="28">
+                </a>
+                <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+                  <span aria-hidden="true"></span>
+                  <span aria-hidden="true"></span>
+                  <span aria-hidden="true"></span>
+                </a>
+              </div>
+
+              <div id="navbarBasicExample" class="navbar-menu">
+                <div class="navbar-start">
+                  <a class="navbar-item" href="/">
+                    Home
+                  </a>
+                  <a class="navbar-item" href="{{ url_for('hits.dashboard') }}">
+                    Hits
+                  </a>
+                  <a class="navbar-item" href="{{ url_for('order.dashboard') }}">
+                    Order
+                  </a>
+                  <a class="navbar-item" href="{{ url_for('youtube.dashboard') }}">
+                    Youtube
+                  </a>
+                  <a class="navbar-item" href="{{ url_for('diary.dashboard') }}">
+                    Diary
+                  </a>
+                  <a class="navbar-item" href="{{ url_for('storage.dashboard') }}">
+                    Storage
+                  </a>
+                </div>
+                <div class="navbar-end">
+                  <div class="navbar-item">
+                    <div class="buttons">
+                      <a class="button is-light">
+                        Log out
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </nav>
+          </div>
+        </div>
+      {% block container %}
+      {% endblock %}
+      </section>
+    </body>
+</html>

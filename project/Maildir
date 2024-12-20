@@ -1,0 +1,125 @@
+class Working:
+    def __init__(root: Path):
+        self.root = root
+
+
+from contextlib import contextmanager
+
+@contextmanager
+def closing(closer, file, mode='r', buffering=-1, encoding=None, errors=None, newline=None, closefd=True, opener=None)
+    try:
+        f = io.open(file, mode='r', buffering=-1, encoding=None, errors=None, newline=None, closefd=True, opener=None)
+        yield f
+    finally:
+        f.close()
+
+        if self.closer:
+            print('Calling self.closer({})'.format(self.closer))
+            self.closer()
+
+
++---------> new
+|           |
+|           | write()
+|delete()   |
+|           v
++---------- tmp <-+
+            |     |
+            |     | write()
+            |     | read()
+            |     |
+removed     +-----^
+^           |
+|           |
+|           | 
+| delete()  |
+|           |
+|           v
++---------- life
+
+tmp → write (→life)
+life → read
+
+
+
+from enum import Enum
+
+# class syntax
+class Color(Enum):
+    NEW = 1
+    DELETE = 2
+    TMP = 3
+    REMOVED
+
+class States:
+
+    def __init__(
+
+    def transition(
+
+class A:
+
+    STATES = {
+        Color.RED: []
+    }
+
+    def
+
+
+class File:
+    def __init__(file, mode='r', buffering=-1, encoding=None, errors=None, newline=None, closefd=True, opener=None):
+
+class FileWithCloser(io.FileIO):
+    """
+    This is a wrapper around a normal File from a normal Filesystem.
+
+    These are the 2 problems were are trying to solve here:
+
+    1) Don't reinvent the wheel (for reading/writing files)
+    2) We need a notify if the layer above use are closing the file. In this case
+       we're trying to write some meta data.
+
+    Depending on the parameter `mode` the open call will return
+    the following object.
+
+    Binary file = True:
+
+    read_mode = True→BufferedReader()
+    write_mode = False→BufferedWriter()
+
+    Binary file = False:
+
+    io.TextIOWrapper with your given encoding.
+
+    """
+    def __init__(self, name, mode='r', closer=None):
+        super().__init__(name, mode=mode)
+        self.closer = closer
+
+    def close(self):
+        super().close()
+
+        if self.closer:
+            print('Calling self.closer({})'.format(self.closer))
+            self.closer()
+
+    @staticmethod
+    def open(name, mode='r', encoding=None, closer=None):
+
+        read_mode = 'r' in mode
+        binary_mode = 'b' in mode
+
+        raw_file_level1 = FileWithCloser(name, mode=mode, closer=closer)
+
+        if read_mode:
+            buffered_file_level2 = io.BufferedReader(raw_file_level1)
+        else:
+            buffered_file_level2 = io.BufferedWriter(raw_file_level1)
+
+        if binary_mode:
+            return buffered_file_level2
+
+        text_buffered_file_level3 = io.TextIOWrapper(buffered_file_level2, encoding=encoding)
+        return text_buffered_file_level3
+
+

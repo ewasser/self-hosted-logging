@@ -1,0 +1,381 @@
+{% extends "base.jinja2" %}
+
+{% block container %}
+
+<link rel="stylesheet" href="/static/baguetteBox/baguetteBox.min.css">
+<script src="/static/baguetteBox/baguetteBox.min.js"></script>
+
+<div class="columns">
+  <div class="column is-12">
+      <h1 class="title is-1">Storage</h1>
+  </div>
+</div>
+<div class="columns">
+  <div class="column is-12">
+      <h1 class="title is-6">{{ body.title }}</h1>
+  </div>
+</div>
+
+<div id="buttons_main"></div>
+
+<div class="columns">
+  <div class="column is-12">
+    <div class="tabs is-centered is-boxed" id="tab1">
+      <ul>
+        <li class="is-active" data-name="pictures">
+          <a>
+            <span class="icon is-small"><i class="fas fa-image" aria-hidden="true"></i></span>
+            <span>Pictures</span>
+          </a>
+        </li>
+        <li data-name="music">
+          <a>
+            <span class="icon is-small"><i class="fas fa-music" aria-hidden="true"></i></span>
+            <span>Music</span>
+          </a>
+        </li>
+        <li data-name="videos">
+          <a>
+            <span class="icon is-small"><i class="fas fa-film" aria-hidden="true"></i></span>
+            <span>Videos</span>
+          </a>
+        </li>
+        <li data-name="documents">
+          <a>
+            <span class="icon is-small"><i class="far fa-file-alt" aria-hidden="true"></i></span>
+            <span>Documents</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div>
+      <div class="tab-content is-active">
+        {% for row in rows %}
+        <div class="columns">
+          {% for card in row %}
+          <div class="column is-3">
+            <h2 class="title is-5">#{{ card.number }}</h2>
+            <div class="card" data-number="{{ card.number }}">
+              <div class="card-image">
+                <figure class="image is-1by1">
+                  <img src="{{ card.urls.thumbnail }}" alt="Placeholder image">
+                </figure>
+              </div>
+              <div class="card-content">
+                <div class="content">
+                  {% for tag in card.tags %}<span class="tag is-info">{{ tag }}</span> {% endfor %}
+                  <br>
+                  <time datetime="{{ card.mtime.machine }}">{{ card.mtime.human }}</time>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% endfor %}
+      </div>
+      <div class="tab-content">
+      </div>
+      <div class="tab-content">
+        <div class="columns">
+          <div class="column is-12">
+            <h2 class="title is-2">Preview</h2>
+            <p>dsasdas2</p>
+          </div>
+        </div>
+      </div>
+      <div class="tab-content">
+        <div class="columns">
+          <div class="column is-12">
+            <h2 class="title is-2">Preview2</h2>
+            <p>dsasdas2</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr>
+Foo1
+<div id="foobar" class="gallery" style="display: none;"></div>
+Foo2
+
+<style>
+  .tab-content.is-active {
+      display: block;
+    }
+  .tab-content {
+      display: none;
+  }
+</style>
+{% raw %}
+<template id="view_documents">
+<div class="columns" id="test">
+  <div class="column is-12">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Type {{ statistics.bytes }}</th>
+          <th>Name {{ rows[0].columns.info.modified }}
+          {% for entry in rows %}???{{ entry.columns.info.modified }}
+          {% endfor %}
+          {% for entry in rows %}???{{ entry.columns.info.modified }}
+          {% endfor %}
+          </th>
+          <th>Info</th>
+          <th>Buttons</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entry in rows %}
+        <tr>
+          <td>{% for e in rows %}e{% endfor %}</td>
+          <td>2</td>
+          <td>3</td>
+          <td>4</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr>
+          <th>Type</th>
+          <th>Name</th>
+          <th>Info</th>
+          <th>Buttons</th>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
+</template>
+
+{% endraw %}
+<script>
+    PAGE_GLOBALS = {{ PAGE_GLOBALS|safe }};
+
+    class Tab {
+       constructor(number, parentElement, header, content) {
+          this.number = number;
+
+          this.parentElement = parentElement;
+          this.header = header;
+          this.content = content;
+
+          this.name = header.dataset.name;
+       }
+    }
+
+    class Tabs {
+        constructor(tabParent) {
+            this.tabParent = tabParent;
+            this.tabs = [];
+            this.collectData();
+            this.installClickEvents();
+        }
+
+        collectData() {
+
+            let header = this.tabParent.querySelectorAll('li');
+            let content = this.tabParent.nextElementSibling.querySelectorAll('.tab-content');
+
+            for (let curIndex = 0; curIndex < header.length; curIndex++) {
+
+                this.tabs.push(new Tab(
+                    curIndex+1, this.tabParent, header[curIndex], content[curIndex]
+                ));
+            }
+        }
+
+        getTab(name) {
+
+            for (const tab of this.tabs) {
+                if (tab.name == name) {
+                    return tab;
+                }
+            }
+            return null;
+        }
+
+        setActiveTab(number) {
+            console.log("B", this, number);
+            for (const tab of this.tabs) {
+                tab.header.classList.remove('is-active');
+            }
+            for (const tab of this.tabs) {
+                tab.content.classList.remove('is-active');
+            }
+            this.tabs[number].header.classList.add('is-active');
+            this.tabs[number].content.classList.add('is-active');
+        }
+
+        installClickEvents() {
+            let number=0;
+            for (const tab of this.tabs) {
+
+                let b=number;
+                let i=this;
+                tab.header.addEventListener('click', function () {
+                    i.setActiveTab(b);
+                });
+                number++;
+            }
+        }
+    }
+
+    images = {{ gallery_images|safe }};
+    images_ = [
+        {
+            'link_picture': 'http://localhost:5000/static/test/29872_1.jpg',
+            {#'link_thumbnail': 'http://localhost:5000/static/test/29872_1.jpg-thumbnail.png',#}
+            'caption': '1.jpg',
+        },
+        {
+            'link_picture': 'http://localhost:5000/static/test/29872_2.jpg',
+            {#'link_thumbnail': 'http://localhost:5000/static/test/29872_2.jpg-thumbnail.png',#}
+            'caption': '2.jpg',
+        }
+    ];
+
+    function create_image_elements(images) {
+
+        images.forEach(function(item) {
+
+            let href_tag = document.createElement('a');
+            href_tag.setAttribute('href', item['link_picture']);
+            href_tag.setAttribute('data-caption', item['caption']);
+
+            document.getElementById("foobar").appendChild(href_tag);
+        });
+    }
+
+    function init_gallery() {
+
+        const gallery = baguetteBox.run('#foobar', {
+            captions: true, // display image captions.
+            buttons: 'auto', // arrows navigation
+            fullScreen: false,
+            noScrollbars: false,
+            bodyClass: 'baguetteBox-open',
+            titleTag: false,
+            async: false,
+            preload: 2,
+            animation: 'slideIn', // fadeIn or slideIn
+            overlayBackgroundColor: 'rgba(0,0,0,.8)'
+        });
+
+        const gallery_button = document.getElementById("gallery-button");
+
+        if (gallery_button) {
+            gallery_button.onclick = function () {
+                baguetteBox.show(0, gallery[0]);
+                return false;
+            }
+        }
+        return gallery;
+    }
+
+    function init_tabs() {
+
+        let tabParents = document.querySelectorAll('.tabs');
+        tabParents.forEach(function (tabParent) {
+
+            let tabs = tabParent.querySelectorAll('li');
+            let contents = tabParent.nextElementSibling.querySelectorAll('.tab-content');
+
+            for (let curIndex = 0; curIndex < tabs.length; curIndex++) {
+
+                tabs[curIndex].addEventListener('click', function () {
+                    tabs.forEach(function (tab) {
+                        tab.classList.remove('is-active');
+                    });
+                    contents.forEach(function (content) {
+                        content.classList.remove('is-active');
+                    });
+
+                    tabs[curIndex].classList.add('is-active');
+                    contents[curIndex].classList.add('is-active');
+                });
+            }
+        });
+    }
+
+    function aaa(gallery) {
+
+        let top = document.getElementsByName("pictures")[0];
+        let cards = top.getElementsByClassName('card');
+
+        Object.entries(cards).forEach(entry => {
+            const [index, card] = entry;
+            console.log(card);
+            console.log(card.dataset.number);
+            aaa = card.querySelector("div > div > figure > img");
+            console.log(aaa);
+            aaa.style.cursor = "pointer";
+            aaa.onclick = function () {
+                baguetteBox.show(card.dataset.number-1, gallery[0]);
+                return false;
+            };
+        });
+    }
+
+    const params = new Proxy(new URLSearchParams(window.location.search), {
+      get: (searchParams, prop) => searchParams.get(prop),
+    });
+
+    console.log(window.location.href);
+
+    document.addEventListener("DOMContentLoaded", function(){
+      //
+      {#create_image_elements(images);#}
+      //
+      let gallery = init_gallery();
+      //
+      {#aaa(gallery)#}
+      //
+      let tabs = new Tabs(document.getElementById("tab1"));
+      init_tabs();
+
+      axios.get(PAGE_GLOBALS['content']).then(function (response) {
+          let data = response.data
+          console.log(data);
+
+          let tab = tabs.getTab(response.data['view']['name']);
+
+          tab.content.innerHTML = data['view']['tab']['content'];
+          tabs.setActiveTab(tab.number-1);
+
+          let buttons_main = document.getElementById("buttons_main");
+          buttons_main.innerHTML = data['view']['buttons']['main'];
+
+       }).catch(function (error) {
+        console.log(error);
+       });
+
+
+      {#let respondToVisibility = function(element, callback) {#}
+      {#  let options = {#}
+      {#    root: document.documentElement#}
+      {#  }#}
+      {##}
+      {#  let observer = new IntersectionObserver((entries, observer) => {#}
+      {#    entries.forEach(entry => {#}
+      {#      callback(entry.intersectionRatio > 0);#}
+      {#    });#}
+      {#  }, options);#}
+      {##}
+      {#  observer.observe(element);#}
+      {# }#}
+      {##}
+      {#respondToVisibility(document.getElementById("test"), visible => {#}
+      {#  if(visible) {#}
+      {#    alert("Visible!");#}
+      {#   }#}
+      {#   else {#}
+      {#    alert("Not visible!");#}
+      {#   }#}
+      {# });#}
+    });
+</script>
+
+{% endblock %}

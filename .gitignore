@@ -1,1 +1,5 @@
+.idea
 *.zip
+__pycache__
+README.ewasser.md
+var/storages/

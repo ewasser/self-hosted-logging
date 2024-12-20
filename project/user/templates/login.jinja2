@@ -1,0 +1,46 @@
+{% extends "base.jinja2" %}
+
+{% block container %}
+
+<div class="columns">
+
+    <div class="column is-3">
+      ...
+    </div>
+
+    <div class="column is-6">
+      <h1 class="title is-1">{{ body.title }}</h1>
+
+      {% include 'get_flashed_messages.jinja2' %}
+
+      <form method="POST">
+        {{ form.csrf_token }}
+        <div class="field">
+            {{ form.username.label(class="label") }}
+            <div class="control">
+                {{ form.username(class="input", placeholder="Your email address") }}
+            </div>
+        </div>
+
+        <div class="field">
+            {{ form.password.label(class="label") }}
+            <div class="control">
+                {{ form.password(class="input", placeholder="Your password") }}
+            </div>
+        </div>
+
+        <div class="field">
+          <div class="control">
+            <button class="button is-link">Submit</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+  <div class="column is-3">
+      ...
+</div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.jinja2" %}
+
+{% block container %}
+
+<div class="columns">
+  <div class="column is-12">
+      <h1 class="title is-1">{{ body.title }}</h1>
+  </div>
+</div>
+
+{% for card_row in storage_rows %}
+<div class="columns">
+  {% for card in card_row %}
+  <div class="column is-3">
+    <div class="card">
+      <header class="card-header">
+        <p class="card-header-title">
+          {{ card.name }}
+        </p>
+      </header>
+
+      <div class="card-content">
+        <div class="content">
+          <span class="icon-text">
+            <span class="icon">
+              <i class="fas fa-image"></i>
+            </span>
+            <span>{{ card.content }}</span>
+          </span>
+        </div>
+      </div>
+
+      <footer class="card-footer">
+        <a href="{{ card.url }}" class="card-footer-item">Open</a>
+      </footer>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endfor %}
+
+{% endblock %}

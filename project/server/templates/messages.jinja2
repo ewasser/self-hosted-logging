@@ -1,0 +1,21 @@
+{% macro sentence_case(text) %}
+    {{ text[0]|upper}}{{text[1:] }}
+{% endmacro %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+
+      <article class="message is-{{ category }}">
+        <div class="message-header">
+          <p>{{ sentence_case(category) }}</p>
+          <button class="delete" aria-label="delete"></button>
+        </div>
+        <div class="message-body">
+          {{  message }}
+        </div>
+      </article>
+
+    {% endfor %}
+  {% endif %}
+{% endwith %}

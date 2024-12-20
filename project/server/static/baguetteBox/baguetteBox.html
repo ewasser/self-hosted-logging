@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+    <title>tank0:/</title>
+      <link rel="stylesheet" href="/static/baguetteBox/baguetteBox.min.css">
+      <!--Let browser know website is optimized for mobile-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      <style>
+          #foobar > a {
+              padding: 2px;
+          }
+      </style>
+    </head>
+    <body>
+      <div id="foobar" class="gallery">
+        <a href="/static/baguetteBox/1266_gamemap01.png" data-caption="Caption 1"><img src="/static/baguetteBox/1266_gamemap01.t.jpg" /></a>
+        <a href="/static/baguetteBox/1266_gamemap02.png" data-caption="Caption 2"><img src="/static/baguetteBox/1266_gamemap02.t.jpg" /></a>
+        <a href="/static/baguetteBox/1266_gamemap03.png" data-caption="Caption 3"><img src="/static/baguetteBox/1266_gamemap03.t.jpg" /></a>
+        <a href="/static/baguetteBox/1266_gamemap04.png" data-caption="Caption 4"><img src="/static/baguetteBox/1266_gamemap04.t.jpg" /></a>
+        <a href="/static/baguetteBox/1266_gamemap05.png" data-caption="Caption 5"><img src="/static/baguetteBox/1266_gamemap05.t.jpg" /></a>
+      </div>
+      <div id="testi">
+
+      </div>
+      <script src="/static/baguetteBox/baguetteBox.min.js" async></script>
+    </body>
+    <script>
+        function create_images(images) {
+
+            images.forEach(function(item) {
+                let image_tag = document.createElement('img');
+                image_tag.setAttribute('src', item['link_thumbnail']);
+
+                let href_tag = document.createElement('a');
+                href_tag.setAttribute('href', item['link_picture']);
+                href_tag.setAttribute('data-caption', item['caption']);
+                href_tag.appendChild(image_tag);
+
+                document.getElementById("foobar").appendChild(href_tag);
+            });
+        }
+
+        function init_box() {
+
+            baguetteBox.run('#foobar', {
+                captions: true, // display image captions.
+                buttons: 'auto', // arrows navigation
+                fullScreen: false,
+                noScrollbars: false,
+                bodyClass: 'baguetteBox-open',
+                titleTag: false,
+                async: false,
+                preload: 2,
+                animation: 'slideIn', // fadeIn or slideIn
+                verlayBackgroundColor: 'rgba(0,0,0,.8)'
+            });
+        }
+
+        window.addEventListener('load', function () {
+            console.log("AAA");
+            let xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    console.log(xhr.responseText);
+                    var data = JSON.parse(xhr.responseText);
+
+                    create_images(data['images']);
+                    init_box();
+
+                    console.log(data);
+                }
+            };
+            xhr.open('GET', '/summary');
+            xhr.send()
+        })
+    </script>
+
+</html>

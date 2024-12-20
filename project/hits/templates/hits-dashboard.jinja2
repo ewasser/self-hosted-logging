@@ -1,0 +1,209 @@
+{% extends "base.jinja2" %}
+
+{% block container %}
+
+<div class="columns">
+  <div class="column is-1">
+  </div>
+  <div class="column is-10">
+    <h1 class="title">{{ page.title }}</h1>
+
+    {% include 'messages.jinja2' %}
+
+    <div class="columns">
+      <div class="column is-1 is-offset-10">
+        <a class="button is-primary is-light" href="{{ navigation.left.url }}" {% if navigation.left.disabled %} disabled{% endif %}>
+          <span class="icon">
+            <i class="fas fa-arrow-left"></i>
+          </span>
+          <span>Left</span>
+        </a>
+      </div>
+      <div class="column is-1">
+        <a class="button is-primary is-light" href="{{ navigation.right.url }}" {% if navigation.right.disabled %} disabled{% endif %}>
+          <span>Right</span>
+          <span class="icon">
+            <i class="fas fa-arrow-right"></i>
+          </span>
+        </a>
+      </div>
+    </div>
+
+    <table class="table is-striped" id="hits">
+      <thead>
+        <tr>
+          <th><abbr title="ID">#</abbr></th>
+          <th><abbr title="Type">Type</abbr></th>
+          <th>Title</th>
+          <th><abbr title="Timestamp">TS</abbr></th>
+          <th><abbr title="Preview">Image</abbr></th>
+          <th><abbr title="Status">Status</abbr></th>
+          <th><abbr title="Actions">Actions</abbr></th>
+       </tr>
+      </thead>
+      <tfoot>
+        <tr>
+          <th><abbr title="ID">#</abbr></th>
+          <th><abbr title="Type">Type</abbr></th>
+          <th>Title</th>
+          <th><abbr title="Timestamp">TS</abbr></th>
+          <th><abbr title="Preview">Image</abbr></th>
+          <th><abbr title="Status">Status</abbr></th>
+          <th><abbr title="Actions">Actions</abbr></th>
+        </tr>
+      </tfoot>
+      <tbody>
+        {% for row in rows %}
+        <tr data-status-url="{{ row.status_url }}" data-database-name="{{ row.database_name }}" data-database-id="{{ row.database_id }}">
+          <th>{{ row.id }}</th>
+          <th><span class="icon"><i class="fas fa-{{ row.icon_title }}"></i></span></th>
+          <td><a href="{{ row.link }}" title="{{ row.title }}">{{ row.title }} / {{  row.kind }}</a></td>
+          <td>{{ row.mtime }}</td>
+          <td>
+    {% if row.kind == 'VIDEO' %}
+    <figure class="image"><img src="{{ url_for('hits.thumbnail', hit_id=row.thumbnail.id) }}"></figure></td>
+    {% endif %}
+          <td>TBD</td>
+          <td><div class="buttons are-small"></div></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="column is-1">
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    const DATA = {{ json_data | safe }};
+
+    async function fetchWithTimeout(resource, options = {}) {
+        const { timeout = 8000 } = options;
+
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), timeout);
+        const response = await fetch(resource, {
+            ...options,
+            signal: controller.signal
+        });
+        return response;
+    }
+
+    function start_download(button, download_url) {
+
+        let headers = new Headers({
+            'Content-Type': 'application/json',
+        });
+
+        fetch(download_url, {
+            method: 'POST',
+            mode: 'cors',
+            cache: 'no-cache',
+            credentials: 'same-origin',
+            headers: headers,
+            redirect: 'follow',
+            referrerPolicy: 'no-referrer',
+        })
+            .then(response => response.json())
+            .then(jsonData => {
+                console.log(jsonData);
+
+                let newEl = document.createElement("span");
+                newEl.innerHTML = jsonData['status']['text'];
+                button.parentNode.replaceChild(newEl, button);
+            })
+            .catch(err => {
+            })
+    }
+
+
+    function getDataForRow2(row, database_name, database_id) {
+
+        status_url = `http://10.0.17.107:3001/database/${database_name}/${database_id}`;
+
+        let headers = new Headers({
+            'Content-Type': 'application/json',
+        });
+
+        fetch(status_url, {
+            method: 'GET',
+            mode: 'cors',
+            cache: 'no-cache',
+            credentials: 'same-origin',
+            headers: headers,
+            redirect: 'follow',
+            referrerPolicy: 'no-referrer',
+        })
+            .then(response => response.json())
+            .then(jsonData => {
+                console.log(jsonData);
+                let container = row.cells[5];
+                container.innerHTML = jsonData['message']
+            })
+            .catch(err => {
+            })
+    }
+
+      function getDataForRow1(row, status_url) {
+
+        let headers = new Headers({
+            'Content-Type': 'application/json',
+        });
+
+        fetch(status_url, {
+            method: 'GET',
+            mode: 'cors',
+            cache: 'no-cache',
+            credentials: 'same-origin',
+            headers: headers,
+            redirect: 'follow',
+            referrerPolicy: 'no-referrer',
+        })
+            .then(response => response.json())
+            .then(jsonData => {
+                let container = row.cells[6].children[0];
+
+                let hit = jsonData['hit']
+
+                if (hit['status'] == 'can-be-downloaded') {
+                    let button = document.createElement("button");
+                    button.innerHTML = "Download";
+                    button.className = "button is-primary";
+                    button.setAttribute("data-single", "true");
+
+                    container.insertBefore(button, container.childNodes[0]);
+
+                    button.addEventListener("click", alertMe);
+
+                    function alertMe(){
+                        alert("The button has been clicked! " + hit['download_url']);
+                        start_download(button, hit['download_url'])
+                        //button.remove();
+                    }
+                }
+                row.cells[5].innerHTML = hit['status'];
+            })
+            .catch(err => {
+            })
+    }
+
+
+    let table = document.getElementById("hits");
+    for (let row of table.rows)
+    {
+        let statusUrl = row.dataset.statusUrl;
+        if (statusUrl) {
+            getDataForRow1(row, statusUrl);
+        }
+        let database_name = row.dataset.databaseName;
+        let database_id = row.dataset.databaseId;
+        if (database_name && database_id) {
+            getDataForRow2(row, database_name, database_id);
+        }
+    }
+});
+</script>
+
+{% endblock %}

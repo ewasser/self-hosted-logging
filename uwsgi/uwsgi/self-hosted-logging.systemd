@@ -1,0 +1,10 @@
+[Unit]
+Description=uWSGI instance to serve myproject
+After=network.target
+
+[Service]
+WorkingDirectory=/home/fuzz/apps/test
+ExecStart=/usr/sbin/uwsgi --ini counter.ini
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,20 @@
+<div class="columns">
+  <div class="column is-12">
+    <div class="field is-grouped">
+      <p class="control">
+        {% for button in buttons %}
+        <a href="{{ button.target }}" id="{{ button.id }}">
+          <button class="button is-link">
+            <span class="icon-text">
+              <span class="icon">
+                <i class="fas fa-{{ button.icon }}"></i>
+              </span>
+              <span>{{ button.text }}</span>
+            </span>
+          </button>
+        </a>
+        {% endfor %}
+      </p>
+    </div>
+  </div>
+</div>

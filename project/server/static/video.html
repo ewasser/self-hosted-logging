@@ -1,0 +1,30 @@
+<html>
+  <head>
+
+  <style>
+    .container {
+      margin: 10px auto;
+    	max-width: 1200px;
+    }
+  </style>
+  </head>
+  <body>
+
+    <div class="container">
+    <video controls crossorigin playsinline poster="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.jpg">
+      <source src="/testing/video/" type="video/mp4">
+    </video>
+  </div>
+
+  <script>
+// Change the second argument to your options:
+// https://github.com/sampotts/plyr/#options
+
+const player = new Plyr('video', {captions: {active: true}});
+
+// Expose player so it can be used from the console
+window.player = player;
+  </script>
+
+  </body>
+</html>

@@ -1,0 +1,59 @@
+{% extends "base.jinja2" %}
+
+{% block container %}
+
+<div class="columns">
+  <div class="column is-1">
+  </div>
+  <div class="column is-10">
+    <h1 class="title">{{ page.title }}</h1>
+
+    {% include 'messages.jinja2' %}
+
+    <div class="columns">
+      <div class="column is-12">
+        <div class="content">
+          <div class="buttons">
+            <a class="button is-link" href="https://www.freecodecamp.org/">Link</a>
+          </div>
+          <p>assasjka sal</p>
+        </div>
+      </div>
+    </div>
+
+    {% for row in cards %}
+    <div class="columns">
+      {% for card in row %}
+      <div class="column is-3">
+        <div class="card">
+          <header class="card-header {{ card.class }}">
+            <p class="card-header-title">
+              {{ card.title }}
+            </p>
+            <button class="card-header-icon" aria-label="more options">
+              <span class="icon">
+                <i class="far fa-{{ card.icon }}" aria-hidden="true"></i>
+              </span>
+            </button>
+          </header>
+          <div class="card-content">
+            <div class="content">
+              {{ card.title }}
+            </div>
+          </div>
+          <footer class="card-footer">
+            <a href="{{ card.url }}" class="card-footer-item">Open</a>
+          </footer>
+        </div>
+      </div>
+
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="column is-1">
+  </div>
+</div>
+
+{% endblock %}

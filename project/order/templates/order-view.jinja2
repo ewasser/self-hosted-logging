@@ -1,0 +1,109 @@
+{% extends "base.jinja2" %}
+
+{% block container %}
+
+<div class="columns">
+  <div class="column is-12">
+    <div class="content">
+      <h1 class="title">{{ page.title }}</h1>
+
+      {% include 'messages.jinja2' %}
+
+      <p>
+        <a href="{{ url_for('order.delete', order_id=order.id ) }}">
+          <button class="button is-danger is-outlined">
+            <span>Delete</span>
+            <span class="icon is-small">
+              <i class="fas fa-times"></i>
+            </span>
+          </button>
+        </a>
+      </p>
+
+      <h1 class="title is-6">ID</h1>
+
+      <div class="box">
+      <p>{{ order.id }}</p>
+      </div>
+
+      <h1 class="title is-6">Title</h1>
+      <div class="box has-background-warning-light">
+      <p>{{ order.title }}</p>
+      </div>
+
+      <h1 class="title is-6">Registered on</h1>
+      <div class="box">
+      <p><samp>{{ order.registered_on }}</samp></p>
+      </div>
+
+      <h1 class="title is-6">Channel</h1>
+      <div class="box">
+      <p><samp>{{ order.channel }}</samp></p>
+      </div>
+
+      <h1 class="title is-6">Payload</h1>
+      <div class="box">
+      <pre>{{ order.payload }}</pre>
+      </div>
+
+
+      <h1 class="title is-6">Logs</h1>
+      <div class="box">
+      {% for row in order_log_lines %}
+        <p><span class="icon-text">
+          <samp>{{ row.registered_on }}</samp>
+          <span class="{{ row.icon }}">
+            <i class="{{ row.text }}"></i>
+          </span>
+          <samp><span>{{ row.line }}</span></samp>
+        </span></p>
+      {% endfor %}
+      </div>
+
+      <div id="worker"></div>
+
+    </div>
+  </div>
+</div>
+
+<script type="application/javascript">
+const GLOBALS = {{ GLOBALS | safe }};
+
+function load_worker(url)
+{
+  axios.get(url, {}).then(function (response) {
+    console.log("LOADING ", url);
+    let worker = document.getElementById('worker');
+    worker.innerHTML = response.data['worker']['html'];
+
+    let button = document.getElementById('prev_worker');
+    console.log(button);
+    console.log(button.dataset);
+    if (button.dataset.url > "") {
+      let target_url = button.dataset.url
+      button.style="cursor: pointer";
+      button.addEventListener('click', function() {
+        load_worker(target_url)
+      });
+    }
+
+    button = document.getElementById('next_worker');
+    if (button.dataset.url > "") {
+      let target_url = button.dataset.url
+      button.style="cursor: pointer";
+      button.addEventListener('click', function() {
+        load_worker(target_url)
+      });
+    }
+  }).catch(function (error) {
+      console.log(error);
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  load_worker(GLOBALS['worker_url']);
+});
+
+</script>
+
+{% endblock %}

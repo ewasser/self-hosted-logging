@@ -1,0 +1,120 @@
+{% extends "base.jinja2" %}
+
+{% block container %}
+
+    <div class="row">
+      <div class="col s12">
+        <nav>
+          <div class="nav-wrapper">
+            <a href="{{ url_for('user.dashboard') }}" class="brand-logo">Logo</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+              <li><a href="{{ url_for('user.dashboard') }}">Dashboard</a></li>
+              <li><a href="{{ url_for('storage.dashboard') }}">Storages</a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col s12"><h1>{{ body.name }}</h1></div>
+    </div>
+
+    <div class="row">
+      <div class="col s12"><h6>{{ body.full_filename }}</h6></div>
+    </div>
+
+    {% include 'get_flashed_messages.jinja2' %}
+
+    <div class="row">
+      <form class="col s12" method="POST">
+        {{ form.csrf_token }}
+        <legend>Please edit the article</legend>
+        <div class="row">
+          <div class="input-field col s12">
+            {{ form.markdown.label() }}
+            {{ form.markdown(class="materialize-textarea", placeholder="AAA1", style='font-family: monospace') }}
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col offset-l10 xl7 offset-xl9">
+            <a href="https://www.google.de" class="waves-effect waves-light btn"><i class="material-icons right">cancel</i>Cancel</a>
+            <button class="btn waves-effect waves-light" type="submit" name="action">Submit
+              <i class="material-icons right">send</i>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="row">
+      <div class="col s12">
+        <ul id="tabs" class="tabs">
+          <li class="tab col s3"><a href="#test1" class="active">Preview</a></li>
+          <li class="tab col s3"><a href="#test2">Metadata</a></li>
+        </ul>
+      </div>
+      <div id="test1" class="col s12">
+        <div class="row">
+          <div id="preview" class="input-field col s12">
+           </div>
+        </div>
+      </div>
+      <div id="test2" class="col s12">
+        <div class="row">
+          <div class="col s12">
+            Test2
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <script>
+
+    function render()
+    {
+        let url = "/markdown/render";
+        let data = {
+           "markdown": {
+               "text": document.getElementById('markdown').value,
+           }
+        };
+
+        axios.post(url, data
+          )
+          .then(function (response) {
+            foo = document.getElementById("preview");
+            foo.innerHTML = response.data['markdown']['content'];
+          })
+          .catch(function (error) {
+            console.log(error);
+        });
+    }
+
+    function install_renderer()
+    {
+        let area = document.querySelector('#markdown');
+        console.log(area);
+        if (area.addEventListener) {
+
+            area.addEventListener('input', function() {
+                render();
+            }, false);
+        } else if (area.attachEvent) {
+            area.attachEvent('onpropertychange', function() {
+            // IE-specific event handling code
+            });
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function(){
+        install_renderer();
+        render();
+
+        M.Tabs.init(document.getElementById('tabs'));
+     });
+
+    </script>
+
+{% endblock %}
