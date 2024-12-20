@@ -1,0 +1,32 @@
+      <h1 class="title is-6">Worker</h1>
+      <p>
+        <span id="prev_worker" class="icon-text" data-url="{{ page.prev.url }}">
+          <span class="icon">
+            <i class="fas fa-home"></i>
+          </span>
+          <span>Backward</span>
+        </span>
+        | {{ page.current }} of {{ page.count }} |
+        <span id="next_worker" class="icon-text" data-url="{{ page.next.url }}">
+          <span>Forward</span>
+          <span class="icon">
+            <i class="fas fa-home"></i>
+          </span>
+        </span>
+      </p>
+
+      <h1 class="title is-6">Channel</h1>
+      <div class="box">
+      <p><samp>{{ worker.id }}</samp></p>
+      </div>
+
+      <h1 class="title is-6">Start time</h1>
+      <div class="box">
+      <p><samp>{{ worker.start_time }}</samp></p>
+      </div>
+
+      <h1 class="title is-6">End time</h1>
+      <div class="box">
+      <p><samp>{{ worker.end_time }}</samp></p>
+      </div>
+

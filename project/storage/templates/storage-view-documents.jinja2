@@ -1,0 +1,41 @@
+<div class="columns">
+  <div class="column is-12">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Name</th>
+          <th>Info</th>
+          <th>Buttons</th>
+        </tr>
+      </thead>
+      <tfoot>
+        <tr>
+          <th>Type</th>
+          <th>Name</th>
+          <th>Info</th>
+          <th>Buttons</th>
+        </tr>
+      </tfoot>
+      <tbody>
+        {% for entry in rows %}
+        <tr>
+          <td><span class="icon"><i class="fas fa-{{ entry.columns.type.icon }}"></i></span></td>
+          <td>{% if entry.columns.type.type == 'dir' %}<a href="{{ url_for('storage.tree', storage_name=entry.columns.name.location.name, path=entry.columns.name.location.path) }}">{{ entry.columns.name.name }}</a>{% else %}{{ entry.columns.name.name }}{% endif %}</td>
+          <td><abbr title="Position">{{ entry.columns.info.modified_human }}</abbr></td>
+          <td>
+            {% for button in entry.columns.buttons %}
+            <a class="button is-small {{ button.cls }}" href="{{ button.target }}">
+              <span class="icon is-small">
+                <i class="fas {{ button.icon }} is-small"></i>
+              </span>
+              <span>{{ button.text }}</span>
+            </a>
+            {% endfor %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>

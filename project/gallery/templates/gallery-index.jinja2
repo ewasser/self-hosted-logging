@@ -1,0 +1,123 @@
+{% extends "base.jinja2" %}
+
+{% block container %}
+
+<link rel="stylesheet" href="/static/baguetteBox/baguetteBox.min.css">
+<style>
+body {
+    background-color: #666;
+    color: #ddd;
+    font-family: Helvetica, Arial, sans-serif;
+    margin: 0;
+}
+
+a, a:visited {
+    color: #97B6D6;
+    text-decoration: none;
+}
+
+h1, h2, h3, footer, .gallery {
+    text-align: center;
+}
+
+pre {
+    width: 340px;
+    margin: 0 auto;
+    border: dashed 1px #aaa;
+    margin-bottom: 10px;
+}
+
+header, footer {
+    display: block;
+    padding: .2em 0;
+    background: #555;
+    box-shadow: 0 0 8px #222;
+}
+
+footer {
+    margin-top: 1em;
+}
+
+.content {
+    max-width: 1160px;
+    margin: 0 auto;
+}
+
+.gallery img {
+    height: 100%;
+}
+
+.gallery a {
+    width: 240px;
+    height: 180px;
+    display: inline-block;
+    overflow: hidden;
+    margin: 4px 6px;
+    box-shadow: 0 0 4px -1px #000;
+}
+
+/* Highlight.js Tomorrow Night style */
+.hljs-comment{color:#969896}.hljs-tag{color:#f8f8f2}.css .hljs-class,.css .hljs-id,.css .hljs-pseudo,.hljs-attribute,.hljs-regexp,.hljs-title,.hljs-variable,.html .hljs-doctype,.ruby .hljs-constant,.xml .hljs-doctype,.xml .hljs-pi,.xml .hljs-tag .hljs-title{color:#c66}.hljs-built_in,.hljs-constant,.hljs-literal,.hljs-number,.hljs-params,.hljs-pragma,.hljs-preprocessor{color:#de935f}.css .hljs-rules .hljs-attribute,.ruby .hljs-class .hljs-title{color:#f0c674}.hljs-header,.hljs-inheritance,.hljs-string,.hljs-value,.ruby .hljs-symbol,.xml .hljs-cdata{color:#b5bd68}.css .hljs-hexcolor{color:#8abeb7}.coffeescript .hljs-title,.hljs-function,.javascript .hljs-title,.perl .hljs-sub,.python .hljs-decorator,.python .hljs-title,.ruby .hljs-function .hljs-title,.ruby .hljs-title .hljs-keyword{color:#81a2be}.hljs-keyword,.javascript .hljs-function{color:#b294bb}.hljs{display:block;overflow-x:auto;background:#35383C;color:#c5c8c6;padding:.8em}.coffeescript .javascript,.javascript .xml,.tex .hljs-formula,.xml .css,.xml .hljs-cdata,.xml .javascript,.xml .vbscript{opacity:.5}
+</style>
+<script src="/static/baguetteBox/baguetteBox.min.js"></script>
+
+<div class="columns">
+  <div class="column is-12">
+      <h1 class="title is-1">{{ body.title }}</h1>
+  </div>
+</div>
+
+
+<div class="columns">
+  <div class="column is-12">
+    <i class="small material-icons">storage</i> Gallery: <a href="{{ url_for('storage.index', name=storage.name) }}">{{ storage.name }}</a>    , <i class="small material-icons">toc</i>, Path: <a href="{{ url_for('storage.index', name=storage.name, path=storage.path) }}">{{ storage.path }}</a>
+  </div>
+  <div class="column is-12">
+    <div id="foobar" class="gallery">
+    </div>
+  </div>
+</div>
+
+<script>
+    images = {{ images_json|safe }};
+
+    function create_image_elements(images) {
+
+        images.forEach(function(item) {
+
+            let image_tag = document.createElement('img');
+            image_tag.setAttribute('src', item['link_thumbnail']);
+
+            let href_tag = document.createElement('a');
+            href_tag.setAttribute('href', item['link_picture']);
+            href_tag.setAttribute('data-caption', item['caption']);
+            href_tag.appendChild(image_tag);
+
+            document.getElementById("foobar").appendChild(href_tag);
+        });
+    }
+
+    function init_box() {
+
+        baguetteBox.run('#foobar', {
+            captions: true, // display image captions.
+            buttons: 'auto', // arrows navigation
+            fullScreen: false,
+            noScrollbars: false,
+            bodyClass: 'baguetteBox-open',
+            titleTag: false,
+            async: false,
+            preload: 2,
+            animation: 'slideIn', // fadeIn or slideIn
+            verlayBackgroundColor: 'rgba(0,0,0,.8)'
+        });
+    }
+
+    window.addEventListener('load', function () {
+        console.log("AAAA");
+        create_image_elements(images);
+        init_box();
+    })
+</script>
+
+{% endblock %}

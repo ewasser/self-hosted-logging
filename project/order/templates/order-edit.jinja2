@@ -1,0 +1,77 @@
+{% extends "base.jinja2" %}
+
+{% block container %}
+
+<div class="columns">
+  <div class="column is-1">
+  </div>
+  <div class="column is-10">
+    <h1 class="title">{{ page.title }}</h1>
+
+    {% include 'messages.jinja2' %}
+
+    <form method="POST">
+      {{ form.csrf_token }}
+      <fieldset disabled>
+        <div class="field">
+          {{ form.id.label(class="label") }}
+          <div class="control">
+            {{ form.id(class="input", placeholder="Your email address") }}
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="field">
+          {{ form.title.label(class="label") }}
+          <div class="control">
+              {{ form.title(class="input", placeholder="Your email address") }}
+          </div>
+      </div>
+
+      <div class="field">
+          {{ form.registered_on.label(class="label") }}
+          <div class="control">
+              {{ form.registered_on(class="input", placeholder="Your email address") }}
+          </div>
+      </div>
+
+      <div class="field">
+          {{ form.channel.label(class="label") }}
+          <div class="control">
+              {{ form.channel(class="input", placeholder="Your email address") }}
+          </div>
+      </div>
+
+      <div class="field">
+        {{ form.status.label(class="label") }}
+        <div class="control">
+            {{ form.status(class="input", placeholder="The channel name like 'download/youtube'") }}
+        </div>
+      </div>
+
+      <div class="field">
+        {{ form.payload.label(class="label") }}
+        <div class="control">
+            {{ form.payload(class="textarea", placeholder="The channel name like 'download/youtube'", rows="10") }}
+        </div>
+        {% for error in form.payload.errors %}
+          <p class="help is-danger">{{ error }}</p>
+        {% endfor %}
+      </div>
+
+      <div class="field is-grouped">
+        <div class="control">
+          {{ form.submit(class_="button is-link") }}
+        </div>
+        <div class="control">
+          {{ form.cancel(class_="button is-link is-light") }}
+        </div>
+      </div>
+
+    </form>
+  </div>
+  <div class="column is-1">
+  </div>
+</div>
+
+{% endblock %}

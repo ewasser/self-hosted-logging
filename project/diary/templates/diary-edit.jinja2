@@ -1,0 +1,135 @@
+{% extends "base.jinja2" %}
+
+{% block container %}
+
+<div class="columns">
+  <div class="column is-1">
+  </div>
+  <div class="column is-10">
+    <h1 class="title is-1">{{ page.title }}</h1>
+
+    {% include 'messages.jinja2' %}
+
+    <div class="tabs is-toggle is-fullwidth" id="tabs">
+      <ul>
+        <li class="is-active" data-tab="1">
+          <a>
+            <span class="icon is-small"><i class="fa fa-file"></i></span>
+            <span>Editor</span>
+          </a>
+        </li>
+        <li data-tab="2">
+          <a>
+            <span class="icon is-small"><i class="fa fa-comment"></i></span>
+            <span>Preview</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="tabs-content">
+      <div class="tab-content is-active">
+        <h2 class="title is-2">Editor</h2>
+        <form method="POST">
+          {{ form.csrf_token }}
+          <div class="field">
+            {{ form.markdown.label() }}
+            <div class="control">
+              {{ form.markdown(class="textarea", placeholder="AAA1", style='font-family: monospace', rows="15") }}
+            </div>
+          </div>
+          <div class="field is-grouped">
+            <div class="control">
+              <button class="button is-link" type="submit">Submit</button>
+            </div>
+            <div class="control">
+              <button class="button is-link is-light" type="reset">Cancel</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="tab-content">
+        <h2 class="title is-2">Preview</h2>
+        <div class="content" id="preview"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="column is-1">
+  </div>
+</div>
+
+<style>
+  .tab-content.is-active {
+      display: block;
+    }
+  .tab-content {
+      display: none;
+  }
+</style>
+
+
+<script type="text/javascript">
+  let tabParents = document.querySelectorAll('.tabs');
+  tabParents.forEach(function(tabParent) {
+
+    let tabs = tabParent.querySelectorAll('li');
+    let contents = tabParent.nextElementSibling.querySelectorAll('.tab-content');
+
+    for (let curIndex = 0; curIndex < tabs.length; curIndex++) {
+
+      tabs[curIndex].addEventListener('click', function () {
+        tabs.forEach(function (tab) {
+            tab.classList.remove('is-active');
+        });
+        contents.forEach(function (content) {
+            content.classList.remove('is-active');
+        });
+
+        tabs[curIndex].classList.add('is-active');
+        contents[curIndex].classList.add('is-active');
+      });
+    }
+  });
+
+  function render()
+  {
+    let url = "/markdown/render";
+    let data = {
+       "markdown": {
+         "text": document.getElementById('markdown').value,
+       }
+    };
+
+    axios.post(url, data)
+      .then(function (response) {
+        let foo = document.getElementById("preview");
+        foo.innerHTML = response.data['markdown']['content'];
+      })
+      .catch(function (error) {
+        console.log(error);
+    });
+  }
+
+  function install_renderer()
+  {
+    let area = document.querySelector('#markdown');
+    if (area.addEventListener) {
+
+      area.addEventListener('input', function() {
+          render();
+      }, false);
+    } else if (area.attachEvent) {
+      area.attachEvent('onpropertychange', function() {
+      // IE-specific event handling code
+      });
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function(){
+    install_renderer();
+    render();
+  });
+
+</script>
+
+{% endblock %}
