@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Self Hosted Logging",
-  "version": "1.0",
+  "version": "1.2.2",
 
   "description": "Logs all Youtube links to a self-hosted end point for further processing.",
 
@@ -10,9 +10,10 @@
   },
 
   "permissions": [
-    "*://*/*",
+    "<all_urls>",
     "webRequest",
-    "storage"
+    "storage",
+    "tabs"
   ],
 
   "browser_specific_settings": {
@@ -23,15 +24,12 @@
 
   "options_ui": {
     "page": "options.html",
+    "open_in_tab": true,
     "browser_style": true
   },
 
-  "content_scripts": [
-    {
-      "matches": [
-        "*://www.youtube.com/*"
-      ],
-      "js": ["borderify.js"]
-    }
-  ]
+  "background": {
+    "scripts": ["background-script.js"]
+  }
+
 }

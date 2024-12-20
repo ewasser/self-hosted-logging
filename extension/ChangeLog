@@ -1,0 +1,21 @@
+# Changes in version 1.2.2 (2021-11-09) #
+
+* bugfix: using the wrong hash key
+
+# Changes in version 1.2.1 (2021-11-09) #
+
+* bugfix: add the string 'Bearer' to 'Authentification' header
+* fix: ChangeLog versions
+
+# Changes in version 1.2 (2021-11-09) #
+
+* add a timeout function for the API call
+* add this ChangeLog file
+
+# Changes in version 1.1 (2021-10-20) #
+
+* add a better preferences page with css
+
+# Changes in version 1.0 (2021-10-09) #
+
+* first public version
